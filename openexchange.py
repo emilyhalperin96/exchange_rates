@@ -1,4 +1,5 @@
 import requests 
+import functools
 
 class OpenExchangeClient:
     BASE_URL = 'https://openexchangerates.org/api'
@@ -8,6 +9,7 @@ class OpenExchangeClient:
 
     @property #doesn't modify or take any arguments just makes a return
     #easier to access
+    @functools.lru_cache(maxsize=2)
     def latest(self):
         return requests.get(f"{self.BASE_URL}/latest.json?app_id={self.app_id}").json()
     
