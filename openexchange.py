@@ -1,5 +1,6 @@
 import requests 
-import functools
+#import functools
+from cachetools import cached, TTLCache
 
 class OpenExchangeClient:
     BASE_URL = 'https://openexchangerates.org/api'
@@ -9,7 +10,9 @@ class OpenExchangeClient:
 
     @property #doesn't modify or take any arguments just makes a return
     #easier to access
-    @functools.lru_cache(maxsize=2)
+    #@functools.lru_cache(maxsize=2)
+    #900 is half an hour 
+    @cached(cache=TTLCache(maxsize=2, ttl=900))
     def latest(self):
         return requests.get(f"{self.BASE_URL}/latest.json?app_id={self.app_id}").json()
     
@@ -23,3 +26,4 @@ class OpenExchangeClient:
             from_in_usd = from_amount / rates[from_currency]
             return from_in_usd * to_rate
 
+#TTL caching
